@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <LangVersion>7.2</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotGrid.Binary\DotGrid.Binary.csproj" />
+    <ProjectReference Include="..\DotGrid.Core\DotGrid.Core.csproj" />
+    <ProjectReference Include="..\DotGrid.Storage.Lmdb\DotGrid.Storage.Lmdb.csproj" />
+    <ProjectReference Include="..\DotGrid.Storage\DotGrid.Storage.csproj" />
+  </ItemGroup>
+</Project>

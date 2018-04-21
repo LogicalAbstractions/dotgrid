@@ -1,0 +1,138 @@
+﻿using System.Collections.Generic;
+
+namespace DotGrid.Storage.Lmdb.Interop
+{
+    public enum LmdbErrorCode
+    {
+        Success = 0,
+        EPerm = 1,
+        ENoEnt = 2,
+        ESrch = 3,
+        EIntr = 4,
+        EIo = 5,
+        ENxIo = 6,
+        E2Big = 7,
+        ENoExec = 8,
+        EBadF = 9,
+        EChild = 10,
+        EAgain = 11,
+        ENoMem = 12,
+        EAcces = 13,
+        EFault = 14,
+        ENotBlk = 15,
+        EBusy = 16,
+        EExist = 17,
+        EXDev = 18,
+        ENoDev = 19,
+        ENotDir = 20,
+        EIsDir = 21,
+        EInval = 22,
+        ENFile = 23,
+        EMFile = 24,
+        ENotTy = 25,
+        ETxtBsy = 26,
+        EFBig = 27,
+        ENoSpc = 28,
+        ESPipe = 29,
+        ERofs = 30,
+        EMLink = 31,
+        EPipe = 32,
+        EDom = 33,
+        ERange = 34,
+        
+        EFileExists = 80,
+        
+        KeyExists = -30799,
+        NotFound = -30798,
+        PageNotFound = -30797,
+        Corrupted = -30796,
+        Panic = -30795,
+        VersionMismatch = -30794,
+        Invalid = -30793,
+        MapFull = -30792,
+        DbsFull = -30791,
+        ReadersFull = -30790,
+        TlsFull = -30789,
+        TxnFull = -30788,
+        CursorFull = -30787,
+        PageFull = -30786,
+        MapResized = -30785,
+        Incompatible = -30784,
+        BadRSlot = -30783,
+        BadTxn = -30782,
+        BadValSize = -30781,
+        BadDbi = -30780,
+        Problem = -30779,
+    }
+
+    public static class LmdbErrorExtensions
+    {
+        private static readonly IReadOnlyDictionary<LmdbErrorCode, string> errorMessages =
+            new Dictionary<LmdbErrorCode, string>()
+            {
+                {LmdbErrorCode.EPerm,"Operation not permitted"},
+                {LmdbErrorCode.ENoEnt,"No such file or directory"},
+                {LmdbErrorCode.ESrch,"No such process"},
+                {LmdbErrorCode.EIntr,"Interrupted system call"},
+                {LmdbErrorCode.EIo,"IO error"},
+                {LmdbErrorCode.ENxIo,"No such device or address"},
+                {LmdbErrorCode.E2Big,"Argument list too long"},
+                {LmdbErrorCode.ENoExec,"Exec format error"},
+                {LmdbErrorCode.EBadF,"Bad file number"},
+                {LmdbErrorCode.EChild,"No child processes"},
+                {LmdbErrorCode.EAgain,"Try again"},
+                {LmdbErrorCode.ENoMem,"out of memory"},
+                {LmdbErrorCode.EAcces,"Permission denied"},
+                {LmdbErrorCode.EFault,"Bad address"},
+                {LmdbErrorCode.ENotBlk,"Block device required"},
+                {LmdbErrorCode.EBusy,"Device or resource busy"},
+                {LmdbErrorCode.EExist,"File exists"},
+                {LmdbErrorCode.EXDev,"Cross device link"},
+                {LmdbErrorCode.ENoDev,"No such device"},
+                {LmdbErrorCode.ENotDir,"Not a directory"},
+                {LmdbErrorCode.EIsDir,"Is a directory"},
+                {LmdbErrorCode.EInval,"Invalid argument"},
+                {LmdbErrorCode.ENFile,"File table overflow"},
+                {LmdbErrorCode.EMFile,"Too many open files"},
+                {LmdbErrorCode.ENotTy,"Not a typewriter"},
+                {LmdbErrorCode.ETxtBsy,"Text file busy"},
+                {LmdbErrorCode.EFBig,"File too large"},
+                {LmdbErrorCode.ENoSpc,"No space left on device"},
+                {LmdbErrorCode.ESPipe,"Illegal seek"},
+                {LmdbErrorCode.ERofs,"Read only file system"},
+                {LmdbErrorCode.EMLink,"Too many links"},
+                {LmdbErrorCode.EPipe,"Broken pipe"},
+                {LmdbErrorCode.EDom,"Math argument out of domain of func"},
+                {LmdbErrorCode.ERange,"Math result not representable"},
+                
+                {LmdbErrorCode.EFileExists,"File already exists"},
+                
+                {LmdbErrorCode.KeyExists,"Key/Value pair already exists"},
+                {LmdbErrorCode.NotFound,"Key/value pair not found"},
+                {LmdbErrorCode.PageNotFound,"Requested page not found, database could be corrupted"},
+                {LmdbErrorCode.Corrupted,"Located page was of wrong type, database corrupted"},
+                {LmdbErrorCode.Panic,"Update of meta page failed or environment had fatal error"},
+                {LmdbErrorCode.VersionMismatch,"Environment version mismatch"},
+                {LmdbErrorCode.Invalid,"File is not a valid LMDB file"},
+                {LmdbErrorCode.MapFull,"Environment mapsize reached"},
+                {LmdbErrorCode.DbsFull,"Environment maxdbs reached"},
+                {LmdbErrorCode.ReadersFull,"Environment maxreaders reached"},
+                {LmdbErrorCode.TlsFull,"Too many TLS keys in use"},
+                {LmdbErrorCode.TxnFull,"Txn has too many dirty pages"},
+                {LmdbErrorCode.CursorFull,"Cursor stack too deep"},
+                {LmdbErrorCode.PageFull,"Page has not enough space"},
+                {LmdbErrorCode.MapResized,"Database contents grew beyond environment mapsize"},
+                {LmdbErrorCode.Incompatible,"Operation and DB incompatible"},
+                {LmdbErrorCode.BadRSlot,"Invalid reuse of reader locktable slot"},
+                {LmdbErrorCode.BadTxn,"Transaction must abort, has a child, or is invalid"},
+                {LmdbErrorCode.BadValSize,"Unsupported size of key/DB name/data or wrong DUPFIXED size"},
+                {LmdbErrorCode.BadDbi,"The specified DBI was changed unexpectedly"},
+                {LmdbErrorCode.Problem,"Unexpected problem, txn should abort"}
+            };
+
+        public static string ToErrorMessage(this LmdbErrorCode errorCode)
+        {
+            return errorMessages.TryGetValue(errorCode, out var message) ? message : "Unknown error";
+        }
+    }
+}
