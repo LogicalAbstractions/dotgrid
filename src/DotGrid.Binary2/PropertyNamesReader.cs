@@ -43,18 +43,19 @@ namespace DotGrid.Binary2
 
                 for (int i = 0; i < nameCount; ++i)
                 {
-                    reader.Seek(CalculateOffsetPosition(startPosition,i)));
+                    reader.Seek(CalculateOffsetPosition(startPosition,i));
                     
                     var nameOffset = reader.ReadInt();
                     var namePosition = startPosition + nameOffset;
                     
                     reader.Seek(namePosition);
-g
-                    var nameSpan = reader.ReadUtf8Span();
 
-                    propertyNamesById[i] = nameSpan.ToString();
+                    var name = reader.ReadUtf8Span().ToString();
+
+                    propertyNamesById[i] = name;
+                    propertyIdsByName[name] = i;
                     
-                    if (nameSpan.Equals(propertyName))
+                    if (name.Equals(propertyName))
                     {
                         return i;
                     }
@@ -75,8 +76,18 @@ g
             {
                 MoveToPropertyNameOffsets(out var nameCount,out var startPosition);
 
+                reader.Seek(CalculateOffsetPosition(startPosition,propertyId));
 
-                var offsetPosition = startPosition + propertyId * sizeof(int);
+                var nameOffset = reader.ReadInt();
+                
+                reader.Seek(startPosition + metadataPosition);
+
+                var name = reader.ReadUtf8Span().ToString();
+
+                propertyIdsByName[name] = propertyId;
+                propertyNamesById[propertyId] = name;
+
+                return name;
             }
 
             throw new BinaryFormatException($"Property {propertyId} not found");
@@ -99,6 +110,6 @@ g
         private int CalculateOffsetPosition(int startPosition, int index)
         {
             return startPosition + index * sizeof(int);
-        }
+        }  
     }
 }
