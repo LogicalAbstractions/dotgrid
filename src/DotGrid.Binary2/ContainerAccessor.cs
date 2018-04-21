@@ -25,6 +25,15 @@ namespace DotGrid.Binary2
 
         internal ValueType ContainerType => containerType;
 
+        internal int EntryCount
+        {
+            get
+            {
+                reader.Seek(metadataPosition + 2);
+                return reader.ReadInt();
+            }
+        }
+
         internal ContainerAccessor(MemoryReader reader, int metadataPosition, ValueType containerType)
         {
             this.reader = reader;

@@ -2,6 +2,11 @@
 {
     public readonly struct BinaryFormatObjectReader
     {
+        private readonly ContainerAccessor accessor;
+        private readonly PropertyNamesReader namesReader;
         
+        public 
+        
+        public int 
     }
 }
