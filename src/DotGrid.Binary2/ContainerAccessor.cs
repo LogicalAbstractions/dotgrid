@@ -34,6 +34,26 @@ namespace DotGrid.Binary2
             }
         }
 
+        internal FixedIntegerType OffsetType
+        {
+            get
+            {
+                reader.Seek(metadataPosition);
+
+                return (FixedIntegerType)reader.ReadByte();
+            }
+        }
+
+        internal FixedIntegerType PropertyIdType
+        {
+            get
+            {
+                reader.Seek(metadataPosition + sizeof(FixedIntegerType));
+
+                return (FixedIntegerType) reader.ReadByte();
+            }
+        }
+
         internal ContainerAccessor(MemoryReader reader, int metadataPosition, ValueType containerType)
         {
             this.reader = reader;
@@ -111,7 +131,7 @@ namespace DotGrid.Binary2
 
             var entry = FindMetadataEntry(idOrIndex);
             
-            return new ContainerAccessor(reader,entry.Position,ValueType.Object);
+            return new ContainerAccessor(reader,entry.Position,entry.ValueType);
         }
 
         private void MoveToValueEntry(int idOrIndex)
@@ -121,6 +141,23 @@ namespace DotGrid.Binary2
             var valueEntry = FindMetadataEntry(idOrIndex);
             
             reader.Seek(valueEntry.Position);
+        }
+
+        internal int GetPropertyIdByIndex(FixedIntegerType offsetType,FixedIntegerType propertyIdType,int index)
+        {
+            reader.Seek(metadataPosition);
+            
+            var propertyPosition = FindObjectMetadataEntryPositionByIndex(offsetType, propertyIdType, index);
+            reader.Seek(propertyPosition  + (int)offsetType);
+
+            var propertyId = reader.ReadFixedInteger(propertyIdType);
+
+            return propertyId;
+        }
+
+        internal ValueType GetValueType(int idOrIndex)
+        {
+            return FindArrayMetadataEntry(idOrIndex).ValueType;
         }
         
         private ValueEntry FindMetadataEntry(int idOrIndex)
@@ -135,7 +172,7 @@ namespace DotGrid.Binary2
             var offsetType = (FixedIntegerType)reader.ReadByte();
 
             var relativeMetadataPosition =
-                1 + // Offset type
+                sizeof(FixedIntegerType) + // Offset type
                 4 + // Element count
                 index *
                 ((int) offsetType + 1);
@@ -195,8 +232,8 @@ namespace DotGrid.Binary2
         private int FindObjectMetadataEntryPositionByIndex(FixedIntegerType offsetType,FixedIntegerType propertyIdType,int index)
         {
             var relativeMetadataPosition =
-                1 + // Offset type
-                1 + // PropertyId type
+                sizeof(FixedIntegerType) + // Offset type
+                sizeof(FixedIntegerType) + // PropertyId type
                 4 + // Element count
                 index *
                 ((int) offsetType + (int) propertyIdType + 1);
